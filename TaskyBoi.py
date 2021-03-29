@@ -4,6 +4,7 @@
 # Date: 3/6/21
 
 import os
+import math
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -17,6 +18,11 @@ all_tasks = []
 # global variable for couting the tasks
 counter = 1
 completed = 0
+
+# global array to hold xp values for each category
+xp = [0, 0, 0, 0, 0, 0]
+total_xp = 0
+xp_level = 0
 
 # global color variables
 med_light = '#f4a261'
@@ -55,6 +61,7 @@ def find_type(cur_task):
 def complete_task():
   global counter
   global completed
+  global xp
 
   # handling the empty task error
   if counter == 1 :
@@ -81,7 +88,9 @@ def complete_task():
 
   # Delete from attribute list
   task_type = find_type(cur_task)
+  xp[task_dict[task_type]] += 10
   completed += 1
+  update_xp()
   total_tasks_completed.set(completed)
   tasks_list[task_dict[task_type]].remove(cur_task)
 
@@ -97,6 +106,50 @@ def complete_task():
   # rewriting the task after deleting one task at a time
   for i in range(len(all_tasks)) :
     text_area.insert('end -1 chars', "[ " + str(i + 1) + " ] " + all_tasks[i] + " ( " + find_type(all_tasks[i]) + " )\n")
+
+# Function used to update the XP Statistics
+def update_xp():
+  global xp
+  global total_xp
+  global xp_level
+
+  total_xp = 0
+  for index in xp:
+    total_xp += index
+  
+  xp_level = math.floor(total_xp/100)
+  cur_xp_level.set(xp_level)
+  xp_prog = math.floor(total_xp%100)
+  cur_tot_xp.set(str(xp_prog) + "/100XP")
+
+  hunger_xp.set("+ " + str(xp[task_dict['Hunger']]) + "XP")
+  thirst_xp.set("+ " + str(xp[task_dict['Thirst']]) + "XP")
+  strength_xp.set("+ " + str(xp[task_dict['Strength']]) + "XP")
+  mood_xp.set("+ " + str(xp[task_dict['Mood']]) + "XP")
+  hygiene_xp.set("+ " + str(xp[task_dict['Hygiene']]) + "XP")
+  energy_xp.set("+ " + str(xp[task_dict['Energy']]) + "XP")
+
+# Function used to change the character
+def char_select():
+  char_type = char_clicked.get()
+  cur_dir = os.getcwd()
+  img_dir = cur_dir + '/Images'
+  cur_img = ''
+
+  if char_type == 'Boy':
+    cur_img = os.path.join(img_dir, 'boy.png')
+  elif char_type == 'Girl':
+    cur_img = os.path.join(img_dir, 'girl.png')
+  elif char_type == 'Goblin':
+    cur_img = os.path.join(img_dir, 'goblin.png')
+  elif char_type == 'Witch':
+    cur_img = os.path.join(img_dir, 'witch.png')
+  elif char_type == 'Wizard':
+    cur_img = os.path.join(img_dir, 'wizard.png')
+
+  img = PhotoImage( file = cur_img) 
+  character_label.configure(image=img)
+  character_label.image = img
 
 # Function used to delete tasks
 def delete_task():
@@ -175,13 +228,10 @@ def insert_task():
 
 # Function for clearing the contents of task entry field   
 def clear_task_field():
-    # clear the content of task field entry box
     enter_task_field.delete(0, 'end')
 
 # Function for clearing the content of task number text field
 def clear_task_number_field() :
-  
-  # clear the content of task number text field
   task_number_field.delete(0.0, 'end')
 
 # Driver code 
@@ -215,19 +265,50 @@ if __name__ == "__main__" :
   tab_parent.add(tab_tasks, text="Tasks")
   tab_parent.add(tab_stats, text="Statistics")
 
-  # Add image file 
-  bg = PhotoImage( file = r"C:\Users\Dakota\Documents\CS224\Images\background.gif") 
+  # Setup image files
+  cur_dir = os.getcwd()
+  img_dir = cur_dir + '/Images'
+
+  # Add background image
+  cur_img = os.path.join(img_dir, 'background.png')
+  bg = PhotoImage( file = cur_img) 
   
-  # Show image using label 
+  # Setup background using label 
   label1 = Label( tab_tasks, image = bg) 
   label1.place(x = 0,y = 0) 
-
+  label2 = Label( tab_stats, image = bg)    
+  label2.place(x = 0,y = 0) 
+  
   # create a label : Enter Your Task
-  photo = PhotoImage(file = r"C:\Users\Dakota\Documents\CS224\Images\create.gif")
-  enter_task = tk.Label(tab_tasks, text = "Enter Your Task", bg = med_light, font=("Trebuchet", 20))
+  cur_img = os.path.join(img_dir, 'create.png')
+  create = PhotoImage(file = cur_img)
+  enter_task = tk.Label(tab_tasks, bg = 'grey', image = create)
 
-  # create a label : My Tasks
-  my_tasks = tk.Label(tab_tasks, text = "My Tasks", font=("Trebuchet", 20))
+  # create a label : My Tasks 
+  cur_img = os.path.join(img_dir, 'mytasks.png')
+  my_tasks_label = PhotoImage(file = cur_img)
+  my_tasks = tk.Label(tab_tasks, bg = 'grey', image = my_tasks_label)
+
+  # create a label : My Tasks 
+  cur_img = os.path.join(img_dir, 'selecttask.png')
+  select_task_label = PhotoImage(file = cur_img)
+  task_number = tk.Label(tab_tasks, bg = 'grey', image = select_task_label)
+  
+  # create a button label : Submit
+  cur_img = os.path.join(img_dir, 'submit.png')
+  submit_label = PhotoImage(file = cur_img)
+  submit = tk.Button(tab_tasks, bg = 'grey', command = insert_task, image = submit_label)
+  
+  # create a button label : Delete 
+  cur_img = os.path.join(img_dir, 'delete.png')
+  delete_label = PhotoImage(file = cur_img)
+  delete = tk.Button(tab_tasks, bg = 'grey', command = delete_task, image = delete_label)
+
+  # create a button label : Mark Complete 
+  cur_img = os.path.join(img_dir, 'markcomplete.png')
+  mark_complete_label = PhotoImage(file = cur_img)
+  complete = tk.Button(tab_tasks, bg = 'grey', command = complete_task, image = mark_complete_label)
+ 
  
   # create a text entry box 
   # for typing the task
@@ -238,7 +319,6 @@ if __name__ == "__main__" :
   # create a Submit Button and place into the root window
   # when user press the button, the command or 
   # function affiliated to that button is executed 
-  submit = tk.Button(tab_tasks, text = "Submit", fg = "Black", bg = medium, command = insert_task, font=("Trebuchet", 15))
   
   # datatype of menu text 
   clicked = StringVar() 
@@ -258,16 +338,9 @@ if __name__ == "__main__" :
   text_area = tk.Text(tab_tasks, height = 20, width = 25, font = "lucida 18")
 
   # create a label : Select Task Number
-  task_number = tk.Label(tab_tasks, text = "Select Task Number", bg = med_light, font=("Trebuchet", 20))
                         
   task_number_field = tk.Text(tab_tasks, height = 1, width = 3, font = "lucida 18")
- 
-  # create a Delete & Complete Button and place into the root window
-  # when user press the button, the command or 
-  # function affiliated to that button is executed .
-  delete = tk.Button(tab_tasks, text = "Delete", fg = "Black", bg = 'Red', command = delete_task, font=("Trebuchet", 15))
-  complete = tk.Button(tab_tasks, text = "Mark Complete", fg = "Black", bg = 'Green', command = complete_task, font=("Trebuchet", 15))
-
+  
   # Create a counter for the tasks completed
   tasks_completed = tk.Label(tab_tasks, text = "Tasks Completed", bg = med_light, font=("Trebuchet", 15))
   total_tasks_completed = StringVar()
@@ -291,5 +364,97 @@ if __name__ == "__main__" :
   tasks_completed.grid(row=8, column=3, padx=15, pady=3, rowspan=20, sticky=S)
   amount_tasks.grid(row=28, column=3, padx=15, pady=3)
 
+  ##### Statistics Tab #####
+
+  # create a label : Xp Level #
+  xp_label = tk.Label(tab_stats, text = "XP Level", bg = med_light, font=("Trebuchet", 30))
+  cur_xp_level = StringVar()
+  xp_level_label = tk.Label(tab_stats, textvariable=cur_xp_level, font=("Trebuchet", 20))
+
+  cur_xp_level.set(xp_level)
+
+  xp_tot_label = tk.Label(tab_stats, text = "Progress", bg = med_light, font=("Trebuchet", 30))
+  cur_tot_xp = StringVar()
+  xp_prog_label = tk.Label(tab_stats, textvariable=cur_tot_xp, font=("Trebuchet", 20))
+
+  cur_tot_xp.set("0/100XP")
+
+  ## Create a dropdown for the character select ##
+
+  # datatype of menu text 
+  char_clicked = StringVar() 
+  # initial menu text 
+  char_clicked.set( "Select Character") 
+  # create options
+  char_options = ['Girl', 'Boy', 'Goblin', 'Witch', 'Wizard']
+  # Create Dropdown menu 
+  char_drop = OptionMenu( tab_stats , char_clicked , *char_options)
+  # create a button label : Submit
+  cur_img = os.path.join(img_dir, 'submit.png')
+  char_submit_label = PhotoImage(file = cur_img)
+  char_submit = tk.Button(tab_stats, bg = 'grey', command = char_select, image = char_submit_label)
+  # character image
+  cur_img = os.path.join(img_dir, 'girl.png')
+  character = PhotoImage( file = cur_img) 
+  character_label = tk.Label(tab_stats, bg = 'grey', image = character)
+
+
+  ## Create a label for each of the task types ##
+  hunger_label = tk.Label(tab_stats, text = "Hunger", bg = med_dark, font = ("Trebuchet, 30"))
+  thirst_label = tk.Label(tab_stats, text = "Thirst", bg = med_dark, font = ("Trebuchet, 30"))
+  energy_label = tk.Label(tab_stats, text = "Energy", bg = med_dark, font = ("Trebuchet, 30"))
+  strength_label = tk.Label(tab_stats, text = "Strength", bg = med_dark, font = ("Trebuchet, 30"))
+  hygiene_label = tk.Label(tab_stats, text = "Hygiene", bg = med_dark, font = ("Trebuchet, 30"))
+  mood_label = tk.Label(tab_stats, text = "Mood", bg = med_dark, font = ("Trebuchet, 30"))
+ 
+  hunger_xp = StringVar()
+  hunger_xp_label = tk.Label(tab_stats, textvariable=hunger_xp, font=("Trebuchet", 15))
+  hunger_xp.set("+ 0XP")
+
+  thirst_xp = StringVar()
+  thirst_xp_label = tk.Label(tab_stats, textvariable=thirst_xp, font=("Trebuchet", 15))
+  thirst_xp.set("+ 0XP")
+
+  energy_xp = StringVar()
+  energy_xp_label = tk.Label(tab_stats, textvariable=energy_xp, font=("Trebuchet", 15))
+  energy_xp.set("+ 0XP")
+  
+  strength_xp = StringVar()
+  strength_xp_label = tk.Label(tab_stats, textvariable=strength_xp, font=("Trebuchet", 15))
+  strength_xp.set("+ 0XP")
+
+  hygiene_xp = StringVar()
+  hygiene_xp_label = tk.Label(tab_stats, textvariable=hygiene_xp, font=("Trebuchet", 15))
+  hygiene_xp.set("+ 0XP")
+  
+  mood_xp = StringVar()
+  mood_xp_label = tk.Label(tab_stats, textvariable=mood_xp, font=("Trebuchet", 15))
+  mood_xp.set("+ 0XP")
+  
+  # Create a grid of the statistics tab
+  xp_label.grid(row=0, column = 1, padx = 75, pady = 10, columnspan = 2)
+  xp_level_label.grid(row = 1, column = 1, padx = 75, pady = 10, columnspan = 2)
+  xp_tot_label.grid(row=0, column = 0, padx = 75, pady = 10, columnspan = 2)
+  xp_prog_label.grid(row = 1, column = 0, padx = 75, pady = 10, columnspan = 2)
+
+  hunger_label.grid(row = 3, column = 0, padx = 75, pady = 5)
+  thirst_label.grid(row = 3, column = 1, padx = 75, pady = 5)
+  energy_label.grid(row = 3, column = 2, padx = 75, pady = 5)
+  strength_label.grid(row = 5, column = 0, padx = 75, pady = 5)
+  hygiene_label.grid(row = 5, column = 1, padx = 75, pady = 5)
+  mood_label.grid(row = 5, column = 2, padx = 75, pady = 5)
+
+  hunger_xp_label.grid(row = 4, column = 0, padx = 75, pady = 5)
+  thirst_xp_label.grid(row = 4, column = 1, padx = 75, pady = 5)
+  energy_xp_label.grid(row = 4, column = 2, padx = 75, pady = 5)
+  strength_xp_label.grid(row = 6, column = 0, padx = 75, pady = 5)
+  hygiene_xp_label.grid(row = 6, column = 1, padx = 75, pady = 5)
+  mood_xp_label.grid(row = 6, column = 2, padx = 75, pady = 5)
+
+  char_submit.grid(row = 14, column = 0, padx = 75, pady = 2, columnspan = 2)
+  char_drop.grid(row = 13, column = 0, padx = 75, pady = 2, columnspan = 2)
+  character_label.grid(row = 7, column = 1, padx = 75, pady = 25, rowspan = 12)
+
+  # Complete the window
   tab_parent.pack(expand=1, fill="both")
   win.mainloop()
