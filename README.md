@@ -18,5 +18,4 @@ implementing everyday tasks and activities into a simple program in which you ca
 character, you will be more motivated to work towards completing your goals. We think this could be
 helpful for students, parents, or anyone that struggles to accomplish all that they want to do.
 
-Tools needed: Python, Tkinter, GitHub/repl.it (collaboration), Piskel (pixel art editor). We’re all new to
-these tools, but there are enough resources online that should make them accessible to us.
+Tools needed: Python, Tkinter, GitHub/repl.it (collaboration), Piskel (pixel art editor).
