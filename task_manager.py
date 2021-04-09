@@ -1,9 +1,10 @@
 # Creating a window with different tabs that can be used
 #
 # CS 224 Team Project
-# Date: 3/6/21
+# Date: 4/9/21
 
 import os
+from os import path
 import math
 import tkinter as tk
 from tkinter import ttk
@@ -234,9 +235,150 @@ def clear_task_field():
 def clear_task_number_field() :
   task_number_field.delete(0.0, 'end')
 
+# Check to see if the program has previous data
+def data_check():
+  if path.exists("data.txt"):
+    return True
+  else:
+    return False
+
+# Create a data file and begin to store important information in it
+def create_data():
+  lines = []
+  lines.append("Girl\n")  # Default character
+  lines.append("0\n") # Tasks Completed
+  lines.append("0\n") # Overall XP
+  lines.append("0\n") # Hunger XP
+  lines.append("0\n") # Hygiene XP
+  lines.append("0\n") # Strength XP
+  lines.append("0\n") # Energy XP
+  lines.append("0\n") # Mood XP
+  lines.append("0\n") # Thirst XP
+  f = open("data.txt", "w")
+  f.writelines(lines)
+  f.close()
+
+def read_data():
+  global xp, completed, task_dict, counter, all_tasks, tasks_list
+
+  # Read in the data
+  f = open("data.txt", "r")
+  lines =  f.readlines()
+  f.close()
+
+  # Update the character
+  char_type = lines[0].strip()
+  cur_dir = os.getcwd()
+  img_dir = cur_dir + '/Images'
+  cur_img = ''
+
+  if char_type == 'Boy':
+    cur_img = os.path.join(img_dir, 'boy.png')
+  elif char_type == 'Girl':
+    cur_img = os.path.join(img_dir, 'girl.png')
+  elif char_type == 'Goblin':
+    cur_img = os.path.join(img_dir, 'goblin.png')
+  elif char_type == 'Witch':
+    cur_img = os.path.join(img_dir, 'witch.png')
+  elif char_type == 'Wizard':
+    cur_img = os.path.join(img_dir, 'wizard.png')
+
+  img = PhotoImage( file = cur_img) 
+  character_label.configure(image=img)
+  character_label.image = img
+
+  # Update the XP
+  xp[task_dict['Hunger']] = int(lines[3].strip())
+  xp[task_dict['Hygiene']] = int(lines[4].strip())
+  xp[task_dict['Strength']] = int(lines[5].strip())
+  xp[task_dict['Energy']] = int(lines[6].strip())
+  xp[task_dict['Mood']] = int(lines[7].strip())
+  xp[task_dict['Thirst']] = int(lines[8].strip())
+  update_xp()
+
+  # Update the tasks
+  completed = int(lines[1].strip())
+  total_tasks_completed.set(completed)
+
+  if len(lines) > 9:
+    cur = 9
+    while cur < len(lines):
+      cur_task = lines[cur].strip().split()
+
+      # get the task string concatenating
+      # with new line character
+      task_type = cur_task[0]
+      content = ''
+      word = 1
+      for e in cur_task[1:]:
+        if word == 1:
+          content += e
+        else:
+          content += " " + e
+        word += 1
+ 
+      # store task in the list
+      tasks_list[task_dict[task_type]].append(content)
+      all_tasks.append(content)
+ 
+      # insert content of task entry field to the text area
+      # add task one by one in below one by one
+      text_area.insert('end -1 chars', "[ " + str(counter) + " ] " + content + " ( " + task_type + " )\n")
+ 
+      # incremented
+      counter += 1
+      cur += 1
+
+# Safely save the program by saving all of the data within
+def save():
+  global xp, total_xp, completed, tasks_list
+  char_type = char_clicked.get()
+
+  # Update the data file
+  f = open("data.txt", "r")
+  lines =  f.readlines()
+  f.close()
+
+  if char_type == "Select Character":
+    char_type = lines[0].strip()
+
+  lines[0] = char_type + "\n"
+  lines[1] = str(completed) + "\n"
+  lines[2] = str(total_xp) + "\n"
+  lines[3] = str(xp[task_dict['Hunger']]) + "\n"
+  lines[4] = str(xp[task_dict['Hygiene']]) + "\n"
+  lines[5] = str(xp[task_dict['Strength']]) + "\n"
+  lines[6] = str(xp[task_dict['Energy']]) + "\n"
+  lines[7] = str(xp[task_dict['Mood']]) + "\n"
+  lines[8] = str(xp[task_dict['Thirst']]) + "\n"
+
+  if len(lines) > 9:
+    del lines[9:]
+
+  for i in range(len(tasks_list)):
+    for task in tasks_list[i]:
+      task_type = ''
+      if i == 0:
+        task_type = 'Hunger'
+      elif i == 1:
+        task_type = 'Hygiene'
+      elif i == 2:
+        task_type = 'Strength'
+      elif i == 3:
+        task_type = 'Energy'
+      elif i == 4:
+        task_type = 'Mood'
+      elif i == 5:
+        task_type = 'Thirst'
+      lines.append(task_type + " " + task + "\n")
+
+  f = open("data.txt", "w")
+  lines =  f.writelines(lines)
+  f.close()
+
 # Driver code 
 if __name__ == "__main__" :
-
+  
   # Create the window & instantiate its size
   win = tk.Tk()
   win.title("Tasky Boi")
@@ -309,12 +451,14 @@ if __name__ == "__main__" :
   mark_complete_label = PhotoImage(file = cur_img)
   complete = tk.Button(tab_tasks, bg = 'grey', command = complete_task, image = mark_complete_label)
  
+  # create a button label : Save
+  cur_img = os.path.join(img_dir, 'delete.png')
+  save_label = PhotoImage(file = cur_img)
+  save_button = tk.Button(tab_tasks, bg = 'grey', command = save, image = save_label)
  
   # create a text entry box 
   # for typing the task
   enter_task_field = tk.Entry(tab_tasks, font=("Trebuchet", 15))
-
-  # add image to button
 
   # create a Submit Button and place into the root window
   # when user press the button, the command or 
@@ -363,10 +507,11 @@ if __name__ == "__main__" :
   complete.grid(row=3, column=3, padx=15, pady=3)
   tasks_completed.grid(row=8, column=3, padx=15, pady=3, rowspan=20, sticky=S)
   amount_tasks.grid(row=28, column=3, padx=15, pady=3)
+  save_button.grid(row=40, column=3, padx=15, pady=3)
 
   ##### Statistics Tab #####
 
-  # create a label : Xp Level #
+  # create a label : Xp Level
   xp_label = tk.Label(tab_stats, text = "XP Level", bg = med_light, font=("Trebuchet", 30))
   cur_xp_level = StringVar()
   xp_level_label = tk.Label(tab_stats, textvariable=cur_xp_level, font=("Trebuchet", 20))
@@ -454,6 +599,13 @@ if __name__ == "__main__" :
   char_submit.grid(row = 14, column = 0, padx = 75, pady = 2, columnspan = 2)
   char_drop.grid(row = 13, column = 0, padx = 75, pady = 2, columnspan = 2)
   character_label.grid(row = 7, column = 1, padx = 75, pady = 25, rowspan = 12)
+
+  # Check to see if the program has previous data
+  data = data_check()
+  if data == False:
+    create_data()
+  else:
+    read_data()
 
   # Complete the window
   tab_parent.pack(expand=1, fill="both")
