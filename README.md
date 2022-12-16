@@ -21,3 +21,11 @@ helpful for students, parents, or anyone that struggles to accomplish all that t
 
 ### Tools & Technologies used: 
 Python, Tkinter, GitHub/repl.it (collaboration), Piskel (pixel art editor).
+
+### Screenshots
+
+###### Landing page
+<img width="1680" alt="Task Manager Landing Page" src="https://github.com/dakota-kallas/Task-Manager-RPG/blob/main/Images/task-manager.PNG">
+
+###### Statistics page
+<img width="1680" alt="Task Manager Landing Page" src="https://github.com/dakota-kallas/Task-Manager-RPG/blob/main/Images/task-manager-stats.PNG">
