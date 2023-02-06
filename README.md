@@ -1,28 +1,23 @@
-# TaskManagerRPG
-An RPG take on a task manager that allows the user to level up their character by completing custom set tasks.
+# RPG Task Manager
 
-_Authors: Chase Roehl, Dakota Kallas, and Cailyn Paul_
+## Authors
+- Chase Roehl
+- Dakota Kallas
+- Cailyn Paul
 
-### Description: 
-An app that is hybrid between a task manager and a role-playing game. Users will have
-their own customizable avatar that they need to keep happy by completing tasks and keeping their
-avatar healthy. As tasks are completed, the avatar will earn experience points that can be used to level
-up different traits, such as strength, hygiene, mood, health, etc. Strength will be upgraded by
-doing exercise tasks such as going to the gym or going for a run. Energy will level up by doing tasks
-such as reading and studying. Mood would level up by doing social tasks such as hanging out with
-friends. If you ever run out of tasks to complete and want to do something spontaneous just click the
-'Bored?' button!
+## Description
+The RPG Task Manager app motivates users to accomplish their daily tasks through a fun and interactive approach, combining elements of task management with a role-playing game. Users can upgrade their custom avatar by completing tasks, improving traits such as strength, hygiene, mood, and health. And when inspiration strikes, the app's "Bored?" button offers suggestions for spontaneous tasks.
 
-### Why? 
-We wanted to create a better way to organize your daily tasks in a fun and fresh way! By
-implementing everyday tasks and activities into a simple program in which you can level up your
-character, you will be more motivated to work towards completing your goals. We think this could be
-helpful for students, parents, or anyone that struggles to accomplish all that they want to do.
+## Why?
+The purpose of this project is to provide an innovative and engaging solution for managing daily tasks. By incorporating routine tasks into a role-playing game, the app encourages users to stay motivated and reach their objectives. Ideal for students, parents, or anyone who finds it challenging to accomplish their to-do list, this app is designed to make task management more fun and effective.
 
-### Tools & Technologies used: 
-Python, Tkinter, GitHub/repl.it (collaboration), Piskel (pixel art editor).
+## Tools & Technologies
+- Python
+- Tkinter
+- GitHub/repl.it
+- Piskel
 
-### Screenshots
+## Screenshots
 
 ###### Landing page
 <img width="1680" alt="Task Manager Landing Page" src="https://github.com/dakota-kallas/Task-Manager-RPG/blob/main/Images/task-manager.PNG">
