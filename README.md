@@ -24,3 +24,7 @@ The purpose of this project is to provide an innovative and engaging solution fo
 
 ###### Statistics page
 <img width="1680" alt="Task Manager Landing Page" src="https://github.com/dakota-kallas/Task-Manager-RPG/blob/main/Images/task-manager-stats.PNG">
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
